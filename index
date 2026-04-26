@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account PPC Audit</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { background:#2D2D2D; color:#F0EDEA; font-family:'DM Sans',sans-serif; line-height:1.55; min-height:100vh; }
+body {
+  background-image:
+    linear-gradient(rgba(56,56,56,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,56,56,0.5) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+::-webkit-scrollbar { width:10px; height:10px; }
+::-webkit-scrollbar-track { background:#2D2D2D; }
+::-webkit-scrollbar-thumb { background:#484848; border-radius:5px; }
+::-webkit-scrollbar-thumb:hover { background:#5A5A5A; }
+* { scrollbar-color: #484848 #2D2D2D; scrollbar-width: thin; }
+
+.ctn { max-width:740px; margin:0 auto; padding:56px 32px 80px; }
+.kicker { font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#E4B85B; margin-bottom:16px; }
+h1 { font-family:‘DM Serif Display’,serif; font-weight:400; font-size:44px; line-height:1.08; margin-bottom:14px; letter-spacing:-0.5px; }
+h2 { font-family:‘DM Serif Display’,serif; font-weight:400; font-size:30px; line-height:1.15; margin-bottom:14px; margin-top:48px; letter-spacing:-0.3px; }
+h3 { font-family:‘DM Serif Display’,serif; font-weight:400; font-size:22px; line-height:1.2; margin-bottom:10px; margin-top:24px; }
+h4 { font-weight:600; font-size:13px; color:#E4B85B; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:10px; margin-top:20px; }
+.lead { font-size:15px; color:#B8B3AD; line-height:1.65; margin-bottom:24px; max-width:620px; }
+.muted { color:#8A8580; font-size:13px; }
+p { color:#B8B3AD; font-size:14.5px; line-height:1.65; margin-bottom:14px; }
+p strong, li strong { color:#F0EDEA; font-weight:600; }
+em { color:#F0EDEA; font-style:italic; }
+ul, ol { color:#B8B3AD; padding-left:22px; margin-bottom:18px; }
+li { margin-bottom:8px; line-height:1.6; font-size:14.5px; }
+
+.window-tag { display:inline-block; font-size:9.5px; font-weight:600; text-transform:uppercase; letter-spacing:1px; padding:2px 6px; border-radius:3px; margin-left:6px; vertical-align:middle; }
+.w30 { background:rgba(137,180,232,0.12); color:#89B4E8; }
+.w60 { background:rgba(201,168,90,0.12); color:#C9A85A; }
+.w64 { background:rgba(125,187,160,0.12); color:#7DBBA0; }
+
+.hero-stats { display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin:28px 0 36px; }
+.hs { background:#363636; border:1px solid #484848; border-radius:10px; padding:18px 20px; }
+.hs-v { font-family:‘DM Serif Display’,serif; font-size:32px; line-height:1; letter-spacing:-1px; }
+.hs-v.gold { color:#E4B85B; }
+.hs-v.sage { color:#7DBBA0; }
+.hs-v.rose { color:#C98A8A; }
+.hs-v.blue { color:#89B4E8; }
+.hs-v.ochre { color:#C9A85A; }
+.hs-l { font-size:11px; text-transform:uppercase; letter-spacing:1.2px; color:#8A8580; margin-top:8px; font-weight:500; }
+.hs-sub { font-size:12px; color:#B8B3AD; margin-top:4px; }
+
+.card { background:#363636; border:1px solid #484848; border-radius:10px; padding:20px 22px; margin:18px 0; }
+.card.gold { border-color:rgba(228,184,91,0.35); background:rgba(228,184,91,0.04); }
+.card.sage { border-color:rgba(125,187,160,0.3); background:rgba(125,187,160,0.04); }
+.card.rose { border-color:rgba(201,138,138,0.3); background:rgba(201,138,138,0.04); }
+.card h4 { margin-top:0; }
+
+table { width:100%; border-collapse:collapse; font-size:13px; background:#363636; border:1px solid #484848; border-radius:8px; overflow:hidden; margin:14px 0; }
+th { background:#1A1A1A; color:#E4B85B; text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:600; padding:11px 14px; border-bottom:1px solid #484848; }
+td { padding:11px 14px; color:#B8B3AD; border-bottom:1px solid #404040; vertical-align:middle; font-variant-numeric:tabular-nums; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:rgba(228,184,91,0.03); }
+td.num, th.num { text-align:right; }
+td strong { color:#F0EDEA; }
+td.good { color:#7DBBA0; font-weight:600; }
+td.bad { color:#C98A8A; font-weight:600; }
+td.ochre { color:#C9A85A; font-weight:600; }
+
+.b { display:inline-block; font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:4px; letter-spacing:.4px; }
+.b-good { background:rgba(125,187,160,0.15); color:#7DBBA0; }
+.b-warn { background:rgba(201,168,90,0.15); color:#C9A85A; }
+.b-bad { background:rgba(201,138,138,0.15); color:#C98A8A; }
+.b-info { background:rgba(137,180,232,0.15); color:#89B4E8; }
+
+details { background:#363636; border:1px solid #484848; border-radius:8px; margin:12px 0; padding:0 18px; }
+details[open] { padding:6px 18px 14px; }
+summary { cursor:pointer; padding:14px 0; font-size:13.5px; font-weight:600; color:#F0EDEA; list-style:none; }
+summary::-webkit-details-marker { display:none; }
+summary::before { content:“▸ “; color:#E4B85B; margin-right:6px; display:inline-block; transition:transform 0.15s; }
+details[open] summary::before { transform:rotate(90deg); }
+
+.mermaid-wrap { background:#363636; border:1px solid #484848; border-radius:10px; padding:24px; margin:18px 0; overflow-x:auto; }
+.div { border:none; border-top:1px solid #484848; margin:48px 0; }
+
+.tldr { background:linear-gradient(135deg, #1B2A4A 0%, #2D2D2D 100%); border:1px solid #484848; border-radius:12px; padding:26px 28px; margin-top:48px; }
+.tldr h3 { color:#E4B85B; margin-top:0; font-size:17px; font-family:‘DM Sans’,sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:14px; }
+.tldr ul { padding-left:18px; }
+.tldr li { color:#F0EDEA; font-size:14px; line-height:1.55; margin-bottom:10px; }
+.tldr li strong { color:#E4B85B; }
+
+.cmp { display:grid; grid-template-columns:140px repeat(3, 1fr); gap:1px; background:#484848; border:1px solid #484848; border-radius:8px; overflow:hidden; margin:18px 0; font-size:13px; }
+.cmp > div { background:#363636; padding:11px 14px; }
+.cmp .ch { background:#1A1A1A; color:#E4B85B; font-size:10px; text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+.cmp .rl { color:#8A8580; font-size:10.5px; text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+.cmp .cell { color:#F0EDEA; font-weight:500; line-height:1.4; }
+
+.scope-banner { background:rgba(228,184,91,0.08); border:1px solid rgba(228,184,91,0.25); border-radius:8px; padding:14px 18px; margin:20px 0 28px; font-size:13px; color:#B8B3AD; }
+.scope-banner strong { color:#E4B85B; }
+
+.legend { display:flex; gap:14px; flex-wrap:wrap; margin:14px 0 28px; padding:14px 18px; background:#363636; border:1px solid #484848; border-radius:8px; font-size:12px; color:#B8B3AD; }
+.legend-item { display:flex; align-items:center; gap:6px; }
+</style>
+
+</head>
+<body>
+<div class="ctn">
+
+  <div class="kicker">Account PPC Audit · Data pulled April 2026</div>
+  <h1>What's actually happening in the account.</h1>
+  <p class="lead">An honest read of the PPC work currently being done on the majority of the account. What's working, what's leaking money, what's missing entirely. Numbers drawn from Amazon Advertising reports and the Seller Central Business Report — each number labeled with its native reporting window.</p>
+
+  <div class="legend">
+    <div class="legend-item"><span class="window-tag w30">30d</span> Advertised Product, Placement, Targeting, Sponsored Display (25 Mar – 23 Apr)</div>
+    <div class="legend-item"><span class="window-tag w64">64d</span> Search Term Report (19 Feb – 23 Apr)</div>
+    <div class="legend-item"><span class="window-tag w60">60d</span> Business Report revenue</div>
+  </div>
+
+  <div class="scope-banner">
+    <strong>Scope:</strong> This audit covers 91.7% of the account — 7,428 active ASINs, 51 SP campaigns. A small portion of the catalog (5 parent products) is under separate management and has been excluded from every metric below.
+  </div>
+
+  <div class="hero-stats">
+    <div class="hs">
+      <div class="hs-v">€1.14M</div>
+      <div class="hs-l">Revenue <span class="window-tag w60">60d</span></div>
+      <div class="hs-sub">2,040 ASINs with sales out of 7,428</div>
+    </div>
+    <div class="hs">
+      <div class="hs-v gold">€23,500</div>
+      <div class="hs-l">PPC Spend <span class="window-tag w30">30d</span></div>
+      <div class="hs-sub">€185,010 attributed PPC sales</div>
+    </div>
+    <div class="hs">
+      <div class="hs-v sage">7.87x</div>
+      <div class="hs-l">PPC ROAS <span class="window-tag w30">30d</span></div>
+      <div class="hs-sub">12.7% ACoS · healthy on paper</div>
+    </div>
+    <div class="hs">
+      <div class="hs-v rose">€10,083</div>
+      <div class="hs-l">Wasted Search Spend <span class="window-tag w64">64d</span></div>
+      <div class="hs-sub">457 terms, 50+ clicks, 0 orders</div>
+    </div>
+  </div>
+
+  <div class="card gold">
+    <h4>The headline</h4>
+    <p>This part of the account runs lean on paper: 7.87x ROAS over 30 days, €1.14M in 60-day revenue. The numbers look healthy because the catalog is huge and a handful of auto-style mega-campaigns carry most of the weight. Underneath: 51 campaigns covering 7,428 ASINs, four of them with 12 ad groups each mixing hundreds of products, <strong>Top of Search converting at 16.64x ROAS but receiving only 0.8% of impressions</strong>, Sponsored Display essentially absent at €970 over 30 days, and €10K of identifiable waste sitting in the search-term report. The account isn't bleeding dramatically — it's under-managed.</p>
+  </div>
+
+  <hr class="div">
+
+  <h2>Where PPC spend goes vs where it should <span class="window-tag w30">30d</span></h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Placement</th>
+        <th class="num">Imp Share</th>
+        <th class="num">Spend Share</th>
+        <th class="num">CTR</th>
+        <th class="num">CVR</th>
+        <th class="num">ROAS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Top of Search</strong></td>
+        <td class="num good">0.8%</td>
+        <td class="num">4.6%</td>
+        <td class="num good">4.85%</td>
+        <td class="num good">2.31%</td>
+        <td class="num good">16.64x</td>
+      </tr>
+      <tr>
+        <td>Rest of Search</td>
+        <td class="num">27.9%</td>
+        <td class="num">35.1%</td>
+        <td class="num">1.50%</td>
+        <td class="num">0.79%</td>
+        <td class="num">7.36x</td>
+      </tr>
+      <tr>
+        <td>Product Pages</td>
+        <td class="num">71.3%</td>
+        <td class="num">60.4%</td>
+        <td class="num">0.88%</td>
+        <td class="num">0.79%</td>
+        <td class="num">7.07x</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Top of Search converts <strong>6x better</strong> on CTR and <strong>3x better</strong> on CVR than any other placement, with more than double the ROAS. It captures less than 1% of impressions. This is a placement optimization gap, not a product problem.</p>
+
+  <h4>Bidding strategy distribution <span class="window-tag w30">30d</span></h4>
+
+  <table>
+    <thead>
+      <tr><th>Strategy</th><th class="num">Campaigns</th><th class="num">Spend</th><th class="num">Sales</th><th class="num">ROAS</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Fixed bids</td><td class="num">42</td><td class="num">€19,684</td><td class="num">€137,697</td><td class="num">7.00x</td></tr>
+      <tr><td>Dynamic — down only</td><td class="num">9</td><td class="num">€3,401</td><td class="num">€41,703</td><td class="num good">12.26x</td></tr>
+      <tr><td>Dynamic — up and down</td><td class="num">4</td><td class="num">€1,329</td><td class="num">€6,310</td><td class="num bad">4.75x</td></tr>
+    </tbody>
+  </table>
+
+  <p>Most campaigns use Fixed Bids, which explains why TOS still shows at all — fixed bids don't get throttled like "down only" does. But the 9 "down only" campaigns are actually performing best at 12.26x ROAS, suggesting those are smaller, focused campaigns where Amazon's algorithm has room to learn. The broader fix is to layer TOS placement modifiers on the Fixed-bid campaigns to push more budget into the one placement that converts best.</p>
+
+  <hr class="div">
+
+  <h2>The €10,083 negation opportunity <span class="window-tag w64">64d</span></h2>
+  <p>Across the Search Term Report covering the last 64 days, <strong>457 individual terms each received 50+ clicks and produced zero orders</strong>. Combined wasted spend: €10,083. That's roughly €4,700/month of recoverable spend — a third of the entire Sponsored Display budget for the same period, burned on terms with zero conversions.</p>
+
+  <div class="card gold">
+    <h4>Why 50+ clicks is the threshold</h4>
+    <p>This part of the account converts at an average 0.90% CVR. A search term that's received 50+ clicks should statistically have produced <em>at least half an order</em>. Zero orders after 50 clicks means the term isn't unlucky — the listing doesn't match shopper intent for that query. 50+ clicks is the number that survives scrutiny in any negation review.</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Search Term <span class="window-tag w64">64d</span></th><th>Match</th><th class="num">Clicks</th><th class="num">Spend</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>fernsehsessel elektrisch verstellbar</td><td><span class="b b-info">PHRASE</span></td><td class="num">265</td><td class="num bad">€150</td></tr>
+      <tr><td>fernsehsessel</td><td><span class="b b-warn">EXACT</span></td><td class="num">210</td><td class="num bad">€121</td></tr>
+      <tr><td>terrassenüberdachung</td><td><span class="b b-info">PHRASE</span></td><td class="num">855</td><td class="num bad">€113</td></tr>
+      <tr><td>gartenmöbel set</td><td><span class="b b-warn">EXACT</span></td><td class="num">369</td><td class="num bad">€112</td></tr>
+      <tr><td>relaxsessel mit hocker</td><td><span class="b b-warn">EXACT</span></td><td class="num">188</td><td class="num bad">€104</td></tr>
+      <tr><td>outdoor küche</td><td><span class="b b-warn">EXACT</span></td><td class="num">557</td><td class="num bad">€92</td></tr>
+      <tr><td>hochbeet balkon</td><td><span class="b b-warn">EXACT</span></td><td class="num">327</td><td class="num bad">€89</td></tr>
+      <tr><td>raumteiler</td><td><span class="b b-warn">EXACT</span></td><td class="num">361</td><td class="num bad">€82</td></tr>
+      <tr><td>fernsehsessel mit hocker</td><td><span class="b b-info">PHRASE</span></td><td class="num">142</td><td class="num bad">€81</td></tr>
+      <tr><td>schlafcouch</td><td><span class="b b-warn">EXACT</span></td><td class="num">316</td><td class="num bad">€76</td></tr>
+    </tbody>
+  </table>
+
+  <details>
+    <summary>Why this keeps happening</summary>
+    <p>Most of these are EXACT match keywords that should never have made it through harvesting if anyone was watching. <em>"fernsehsessel"</em> and <em>"fernsehsessel elektrisch verstellbar"</em> are the same product category burning €270 combined — probably the "Relaxsessel Keyword" campaign bidding broadly into terms the actual product doesn't convert on. A weekly negation review on terms with 50+ clicks and 0 orders would catch all of these in 30 minutes per week. That's the cheapest line item in any PPC service contract.</p>
+  </details>
+
+  <hr class="div">
+
+  <h2>Four mega-campaigns holding the account together <span class="window-tag w30">30d</span></h2>
+
+  <table>
+    <thead>
+      <tr><th>Campaign</th><th class="num">Ad Groups</th><th class="num">ASINs in worst group</th><th class="num">Spend</th><th class="num">Sales</th><th class="num">ROAS</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>A15</strong></td><td class="num">12</td><td class="num bad">535</td><td class="num">€1,296</td><td class="num">€17,207</td><td class="num good">13.27x</td></tr>
+      <tr><td><strong>A20</strong></td><td class="num">12</td><td class="num bad">192</td><td class="num">€866</td><td class="num">€11,062</td><td class="num good">12.78x</td></tr>
+      <tr><td><strong>A07</strong></td><td class="num">12</td><td class="num">54</td><td class="num">€99</td><td class="num">€3,463</td><td class="num good">35.08x</td></tr>
+      <tr><td><strong>A10</strong></td><td class="num">12</td><td class="num bad">406</td><td class="num">€372</td><td class="num">€2,254</td><td class="num">6.05x</td></tr>
+      <tr><td><strong>A04</strong></td><td class="num">9</td><td class="num">16</td><td class="num">€14</td><td class="num">€706</td><td class="num good">49.79x</td></tr>
+    </tbody>
+  </table>
+
+  <p>These five campaigns do a lot of heavy lifting. A15 alone generates €17K in 30 days. They're profitable — that's not the problem. The problem is visibility and control:</p>
+
+  <ul>
+    <li><strong>535 ASINs in a single ad group</strong> (A15-K30) means per-ASIN bid optimization is impossible. One bid covers 535 products at different prices, margins, and competitive positions.</li>
+    <li><strong>No per-product copy</strong> because ad copy is attached to the product listing, but grouped management means winners and losers get the same budget treatment.</li>
+    <li><strong>Negative keyword hygiene is broken</strong>. Negating a term inside a 535-ASIN ad group risks killing a converter that happens to match on a different ASIN.</li>
+    <li><strong>Harvesting is manual and slow</strong>. When these campaigns discover a winning search term, promoting it to a proper exact-match campaign requires finding which of 535 ASINs it belongs to.</li>
+  </ul>
+
+<div class="mermaid-wrap">
+<pre class="mermaid">
+flowchart LR
+  subgraph CUR["Current (1 of 51 campaigns)"]
+    C1[A15 Campaign<br/>12 ad groups<br/>1,908 ASINs]
+    C1 --> AG1[K22: 332 ASINs]
+    C1 --> AG2[K26: 488 ASINs]
+    C1 --> AG3[K30: 535 ASINs]
+    C1 --> AG4[+9 more groups]
+  end
+
+subgraph REC[“Recommended per ASIN”]
+P1[1 ASIN Campaign]
+P1 –> PA1[Auto Discovery]
+P1 –> PA2[Manual Exact - Winners]
+P1 –> PA3[Manual Broad - Research]
+P1 –> PA4[PAT Competitor]
+P1 –> PA5[Brand Defense]
+end
+
+CUR -.->|“restructure”| REC
+
+classDef bad fill:#3D2828,stroke:#C98A8A,color:#F0EDEA
+classDef good fill:#28332D,stroke:#7DBBA0,color:#F0EDEA
+class C1,AG1,AG2,AG3,AG4 bad
+class P1,PA1,PA2,PA3,PA4,PA5 good
+</pre>
+
+</div>
+
+  <h4>Recommended structure per product</h4>
+  <ul>
+    <li><strong>Auto Catch-all</strong> — discovery at low bids, harvest source</li>
+    <li><strong>Manual Exact</strong> — proven converters, scaled aggressively</li>
+    <li><strong>Manual Broad / Phrase</strong> — mid-funnel exploration</li>
+    <li><strong>PAT Competitor</strong> — targets top competitor ASINs (formalizing what auto campaigns already discover)</li>
+    <li><strong>Brand Defense</strong> — protects own keyword space</li>
+  </ul>
+
+  <p>Splitting the five mega-campaigns into per-ASIN campaigns would add 200–300 new campaigns. Sounds painful, but most professionally managed catalogs of this size run 500–1,500 active campaigns.</p>
+
+  <hr class="div">
+
+  <h2>Sponsored Display is practically absent <span class="window-tag w30">30d</span></h2>
+
+  <div class="card rose">
+    <h4>The numbers</h4>
+    <p><strong>€970 total SD spend over the last 30 days</strong> across 18 campaigns (13 active). Combined SD sales: €3,515. For context: this is an account generating €1.14M in 60-day revenue, with 2,040 ASINs producing sales and an obvious opportunity in every category where shoppers compare 5–10 products before buying. SD should represent 15–25% of total PPC spend — here it's 4%.</p>
+  </div>
+
+  <p>Beyond the volume gap, the SD setup itself shows that nobody is actively managing it. Of 18 campaigns, most are named generically ("Garten Display", "SD_Pergolen_PAT_...") and several are paused with zero activity. There's no systematic view-remarketing, no competitor ASIN defensive layer, no category-based audience targeting.</p>
+
+  <hr class="div">
+
+  <h2>Three products that tell the whole story <span class="window-tag w30">30d PPC · </span><span class="window-tag w60">60d rev</span></h2>
+  <p>Out of 47 in-scope products with ROAS 10x+ and 30d spend under €300, these three stand out. They're from different categories, they're all converting well above account average, and none has anyone paying attention to them.</p>
+
+  <div class="cmp">
+    <div class="ch rl">Metric</div>
+    <div class="ch">Relaxsessel L11</div>
+    <div class="ch">Absperrgitter B34AM</div>
+    <div class="ch">Sonnenschirm N19</div>
+
+```
+<div class="rl">ASIN</div>
+<div class="cell" style="font-size:11px">B0GMQ1PXL1</div>
+<div class="cell" style="font-size:11px">B0DLBD1ZNC</div>
+<div class="cell" style="font-size:11px">B0F6V8X4WK</div>
+
+<div class="rl">Revenue (60d BR)</div>
+<div class="cell">€8,569</div>
+<div class="cell">€11,266</div>
+<div class="cell">€6,886</div>
+
+<div class="rl">Units sold (60d)</div>
+<div class="cell">10 units</div>
+<div class="cell">73 units</div>
+<div class="cell">92 units</div>
+
+<div class="rl">PPC spend (30d)</div>
+<div class="cell" style="color:#C98A8A">€58 / €1.93/day</div>
+<div class="cell" style="color:#C98A8A">€69 / €2.31/day</div>
+<div class="cell" style="color:#C98A8A">€18 / €0.60/day</div>
+
+<div class="rl">ROAS (30d)</div>
+<div class="cell" style="color:#7DBBA0;font-weight:700">35.48x</div>
+<div class="cell" style="color:#7DBBA0;font-weight:700">14.88x</div>
+<div class="cell" style="color:#7DBBA0;font-weight:700">24.74x</div>
+
+<div class="rl">Current setup</div>
+<div class="cell">Mega-camp A10 + Auto only</div>
+<div class="cell">Split across 3 mega-camps</div>
+<div class="cell">Split across 4 mega-camps</div>
+
+<div class="rl">What's missing</div>
+<div class="cell">Manual Exact, PAT, SD</div>
+<div class="cell">Dedicated campaign at all</div>
+<div class="cell">Any individual attention</div>
+
+<div class="rl">Obvious next move</div>
+<div class="cell">10x the spend at same ROAS</div>
+<div class="cell">Pull out of mega, build STAG</div>
+<div class="cell">Own the niche with €5/day</div>
+```
+
+  </div>
+
+  <div class="card sage">
+    <h4>The combined picture</h4>
+    <p>These three products generated <strong>€26,721 in 60-day revenue</strong> on <strong>€145 in total 30d PPC spend</strong>. Combined PPC ROAS: 24.5x. None has a dedicated Manual Exact campaign. None has a PAT competitor layer. None has Sponsored Display remarketing.</p>
+    <p>This pattern repeats across 44 other in-scope products. The ones where PPC works best are the ones where nobody is actively managing the PPC — which means the structural opportunity isn't "start advertising these products," it's "start treating them like they matter."</p>
+  </div>
+
+  <hr class="div">
+
+  <h2>Competitor ASIN targeting — the hidden win <span class="window-tag w64">64d</span></h2>
+  <p>This is the most interesting finding in the audit. Auto campaigns are matching against competitor ASINs through substitutes targeting, and the results are extraordinary.</p>
+
+  <div class="hero-stats">
+    <div class="hs">
+      <div class="hs-v sage">€7,899</div>
+      <div class="hs-l">Spend on competitor ASINs</div>
+      <div class="hs-sub">via Auto / substitutes (64d)</div>
+    </div>
+    <div class="hs">
+      <div class="hs-v gold">€89,282</div>
+      <div class="hs-l">Sales attributed</div>
+      <div class="hs-sub">Search Term Report, 64d</div>
+    </div>
+    <div class="hs">
+      <div class="hs-v sage">11.30x</div>
+      <div class="hs-l">ROAS</div>
+      <div class="hs-sub">vs 7.87x account 30d avg</div>
+    </div>
+    <div class="hs">
+      <div class="hs-v blue">35,347</div>
+      <div class="hs-l">Unique ASIN matches</div>
+      <div class="hs-sub">unique competitor ASINs hit</div>
+    </div>
+  </div>
+
+  <p>Competitor ASIN matching is producing disproportionate sales at a ROAS substantially above account average — and it's happening <em>by accident</em> through Auto targeting. Every other category of PPC activity would get more attention if anyone knew how much revenue came from this specific mechanic.</p>
+
+  <details>
+    <summary>The play</summary>
+    <p>Pull the top 50 competitor ASINs by 64d sales attribution. Build dedicated PAT campaigns per top-revenue product against those ASINs with deliberate bids. Use "Targeting Expansion" in PAT to pick up lookalike competitor listings. Shift part of the Auto-campaign budget into these PAT campaigns once they prove out.</p>
+    <p>The risk is minimal because the data proves the demand. The payoff is structural — turning a happy accident into a system means it can be scaled, optimized, and measured properly.</p>
+  </details>
+
+  <hr class="div">
+
+  <h2>Missing campaigns</h2>
+
+  <div class="cmp">
+    <div class="ch rl">Type</div>
+    <div class="ch">Current</div>
+    <div class="ch">Should Be</div>
+    <div class="ch">Why</div>
+
+```
+<div class="rl">Sponsored Display</div>
+<div class="cell">€970 / 30d<br><span class="muted">Essentially absent</span></div>
+<div class="cell">€3K–5K / 30d<br><span class="muted">View remarketing</span></div>
+<div class="cell">Recaptures the 70%+ of browsers who don't buy first visit</div>
+
+<div class="rl">Sponsored Brands</div>
+<div class="cell">No SB report<br><span class="muted">Presumed minimal</span></div>
+<div class="cell">Headline + Video<br><span class="muted">Top 5 categories</span></div>
+<div class="cell">Defends top-of-page, builds brand recall</div>
+
+<div class="rl">PAT Competitor</div>
+<div class="cell">Only via Auto<br><span class="muted">Already 11.30x ROAS</span></div>
+<div class="cell">Deliberate PAT campaigns<br><span class="muted">Top 50 competitor ASINs</span></div>
+<div class="cell">Formalizes the best-performing channel in the account</div>
+
+<div class="rl">Ranking</div>
+<div class="cell">Zero in-scope<br><span class="muted">No SUP / launch camps</span></div>
+<div class="cell">Per-product ranking<br><span class="muted">Aggressive TOS bids</span></div>
+<div class="cell">5,388 ASINs have no sales in 60d — most likely ranked too low to be found</div>
+```
+
+  </div>
+
+  <hr class="div">
+
+  <h2>The 5,388 invisible ASINs <span class="window-tag w60">60d</span></h2>
+
+  <div class="card rose">
+    <h4>The math</h4>
+    <p>7,428 in-scope ASINs are live. 2,040 have at least one unit sold in the 60-day Business Report. <strong>5,388 ASINs — 72.5% of the active catalog — produced zero revenue in two months.</strong> Some are seasonal or discontinued, but a meaningful portion are simply ranked too deep in search results to be found.</p>
+  </div>
+
+  <p>Without concentrated TOS pressure on target keywords for 2–4 weeks per new listing, products either rank organically by accident or never rank at all. If even 5% of these invisible ASINs could be recovered through ranking PPC, that's 269 additional products contributing to topline.</p>
+
+  <p>The question Helium 10 data would answer definitively: what are the top keywords for those invisible ASINs and where are they ranking organically? Without that data we can only note the gap. The hypothesis is straightforward: in competitive categories like Garten and Haushalt, organic ranking without PPC pressure is rare.</p>
+
+  <hr class="div">
+
+  <h2>Forecast</h2>
+  <p>All projections below are expressed in monthly terms and built from the 30-day PPC window as the baseline. Revenue assumptions are conservative.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Scenario</th>
+        <th class="num">PPC Spend / mo</th>
+        <th class="num">PPC Sales / mo</th>
+        <th class="num">ROAS</th>
+        <th class="num">vs Today</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Today</strong> (30d actual)</td>
+        <td class="num">€23,500</td>
+        <td class="num">€185,010</td>
+        <td class="num">7.87x</td>
+        <td class="num muted">Baseline</td>
+      </tr>
+      <tr>
+        <td><strong>30 days</strong> — negation only</td>
+        <td class="num">€18,800</td>
+        <td class="num">€185,010</td>
+        <td class="num good">9.84x</td>
+        <td class="num good">€4,700/mo saved</td>
+      </tr>
+      <tr>
+        <td><strong>60 days</strong> — negation + TOS shift + reinvest</td>
+        <td class="num">€23,500</td>
+        <td class="num">€215,000</td>
+        <td class="num good">9.15x</td>
+        <td class="num good">+€29,990/mo</td>
+      </tr>
+      <tr>
+        <td><strong>90–120 days</strong> — full restructure + SD/SB/PAT + ranking</td>
+        <td class="num">€28,000</td>
+        <td class="num">€248,000</td>
+        <td class="num good">8.86x</td>
+        <td class="num good">+€62,990/mo</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <details>
+    <summary>How these numbers were built</summary>
+    <p><strong>30-day scenario</strong>: Removes €10,083 of wasted spend identified in the 64d Search Term Report, normalized to monthly (~€4,700/mo). Sales hold flat — the negated terms produced nothing.</p>
+    <p><strong>60-day scenario</strong>: Reinvests saved €4,700/mo at current ROAS of 7.87x = ~€37K extra monthly sales, then discounted ~20% because reinvestment rarely holds the original ROAS. Adds TOS placement modifiers on the 42 fixed-bid campaigns to push more budget into 16.64x ROAS placement — modeled at +3-5% sales lift.</p>
+    <p><strong>90–120 day scenario</strong>: Restructures the five mega-campaigns into per-ASIN STAG (Single Theme Ad Group) structure (5–8% efficiency gain). Adds proper SD remarketing at €3–4K/mo at 4–5x ROAS. Builds deliberate PAT competitor campaigns around already-winning competitor ASINs at 9–10x ROAS. Adds 10–15 ranking campaigns on highest-potential invisible ASINs. Excludes any organic ranking lift from sustained TOS visibility.</p>
+    <p>Caveats: projections over 30 days are partly model and partly faith. The forecast assumes competent execution — a half-done restructure could hurt before it helps.</p>
+  </details>
+
+  <hr class="div">
+
+  <div class="tldr">
+    <h3>Bottom Line</h3>
+    <ul>
+      <li><strong>91.7% of the account is under-managed, not broken.</strong> 7.87x ROAS over 30 days looks healthy because a handful of auto-style mega-campaigns do most of the work — not because anyone is actively optimizing.</li>
+      <li><strong>€10,083 of waste is identifiable in the 64d Search Term Report</strong> (~€4,700/mo). 457 terms with 50+ clicks and zero orders. Lowest-risk intervention in the deck.</li>
+      <li><strong>Top of Search converts at 16.64x ROAS but receives 0.8% of impressions.</strong> Adding TOS placement modifiers on fixed-bid campaigns is the single highest-leverage change available.</li>
+      <li><strong>Competitor ASIN targeting already generates €89K of PPC sales at 11.30x ROAS over 64 days — by accident.</strong> Formalizing this into deliberate PAT campaigns is the biggest unclaimed opportunity in the account.</li>
+      <li><strong>Realistic 90–120 day upside: +€63K monthly PPC sales</strong> through negation, TOS optimization, mega-campaign restructure, formal PAT, SD layer, and ranking campaigns on invisible ASINs. Most of the lift comes from work the account's own data already proves works.</li>
+    </ul>
+  </div>
+
+</div>
+<script>
+mermaid.initialize({ startOnLoad:true, theme:'dark', themeVariables:{ background:'#363636', primaryColor:'#363636', primaryBorderColor:'#484848', primaryTextColor:'#F0EDEA', lineColor:'#8A8580', fontFamily:'DM Sans, sans-serif' } });
+</script>
+</body>
+</html>
